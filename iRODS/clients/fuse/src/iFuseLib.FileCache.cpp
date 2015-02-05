@@ -435,8 +435,7 @@ int _ifuseFileCacheRead( fileCache_t *fileCache, char *buf, size_t size, off_t o
 
 
         bzero( &dataObjReadInp, sizeof( dataObjReadInp ) );
-        dataObjReadOutBBuf.buf = buf;
-        dataObjReadOutBBuf.len = size;
+        bzero( &dataObjReadOutBBuf, sizeof( bytesBuf_t ) );
         dataObjReadInp.l1descInx = fileCache->iFd;
         dataObjReadInp.len = size;
 
@@ -453,6 +452,8 @@ int _ifuseFileCacheRead( fileCache_t *fileCache, char *buf, size_t size, off_t o
                 return -ENOENT;
             }
         }
+        memcpy( buf, dataObjReadOutBBuf.buf, status );
+        free( dataObjReadOutBBuf.buf );
     }
     else {
         status = read( fileCache->iFd, buf, size );
